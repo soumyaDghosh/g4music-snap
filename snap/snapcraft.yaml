@@ -30,6 +30,7 @@ parts:
       - gettext
       - libgstreamer1.0-dev
       - libgstreamer-plugins-base1.0-dev
+      - libwebpmux3
     stage-packages:
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
