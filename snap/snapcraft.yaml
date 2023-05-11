@@ -2,9 +2,8 @@ name: g4music # you probably want to 'snapcraft register <name>'
 base: core22 # the base snap is the execution environment for this snap
 version: '1.11' # just for humans, typically '1.2+git' or '1.3.2'
 adopt-info: g4music
-
-grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: devmode # use 'strict' once you have the right plugs and slots
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: strict # use 'strict' once you have the right plugs and slots
 compression: lzo
 
 slots:
@@ -24,9 +23,13 @@ parts:
     build-packages:
       - libgstreamer1.0-dev
       - libgstreamer-plugins-base1.0-dev
+      - libgstreamer-plugins-bad1.0-dev
+      - libgstreamer-plugins-good1.0-dev
     stage-packages:
       - libgstreamer1.0-0
       - libgstreamer-plugins-base1.0-0
+      - libgstreamer-plugins-bad1.0-0
+      - libgstreamer-plugins-good1.0-0
     build-environment:
       - LDFLAGS: "-Wl,--copy-dt-needed-entries"
     organize:
@@ -52,8 +55,6 @@ apps:
     command: usr/bin/g4music
     desktop: usr/share/applications/com.github.neithern.g4music.desktop
     common-id: com.github.neithern.g4music
-    environment:
-      GTK_USE_PORTAL: 1
     slots:
       - mpris
     plugs:
@@ -61,3 +62,4 @@ apps:
       - audio-playback
       - removable-media
       - mount-observe
+      - network
