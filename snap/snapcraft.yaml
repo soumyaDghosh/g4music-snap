@@ -1,12 +1,7 @@
 name: g4music # you probably want to 'snapcraft register <name>'
 base: core22 # the base snap is the execution environment for this snap
-version: '1.8.2' # just for humans, typically '1.2+git' or '1.3.2'
-summary: Single-line elevator pitch for your amazing snap # 79 char long summary
-description: |
-  This is my-snap's description. You have a paragraph or two to tell the
-  most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+version: '1.11' # just for humans, typically '1.2+git' or '1.3.2'
+adopt-info: g4music
 
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: devmode # use 'strict' once you have the right plugs and slots
@@ -25,42 +20,29 @@ parts:
     source: https://gitlab.gnome.org/neithern/g4music.git
     source-tag: v${SNAPCRAFT_PROJECT_VERSION}
     meson-parameters:
-      - --prefix=/usr
+      - --prefix=/snap/current/g4music/usr
     build-packages:
-      - gettext
       - libgstreamer1.0-dev
       - libgstreamer-plugins-base1.0-dev
-      - libwebpmux3
     stage-packages:
-      - gstreamer1.0-plugins-base
-      - gstreamer1.0-plugins-good
-      - gstreamer1.0-plugins-bad
-      - gstreamer1.0-plugins-ugly
       - libgstreamer1.0-0
       - libgstreamer-plugins-base1.0-0
     build-environment:
       - LDFLAGS: "-Wl,--copy-dt-needed-entries"
-    override-prime: |
-      craftctl default
-      sed -e 's|Icon=com.github.neithern.g4music|Icon=/usr/share/icons/hicolor/scalable/apps/com.github.neithern.g4music.svg|' -i usr/share/applications/com.github.neithern.g4music.desktop
-# This part removes all the files in this snap which already exist in
-# connected content and base snaps. Since these files will be available
-# at runtime from the content and base snaps, they do not need to be
-# included in this snap itself.
-#
-# More info: https://forum.snapcraft.io/t/reducing-the-size-of-desktop-snaps/17280#heading--cleanup-part
-#
+    organize:
+      snap/current/g4music: .
+    parse-info: [usr/share/metainfo/com.github.neithern.g4music.appdata.xml]
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - g4music
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
       - gnome-42-2204
-      - gnome-42-2204-sdk
+      - gtk-common-themes
       - core22
     override-prime: |
       set -eux
-      for snap in "gnome-42-2204" "gnome-42-2204-sdk" "core22"; do
+      for snap in "gnome-42-2204" "gtk-common-themes" "core22"; do
       cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
       done
       find $CRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
